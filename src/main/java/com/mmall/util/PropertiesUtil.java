@@ -1,0 +1,48 @@
+package com.mmall.util;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Properties;
+
+//读取配置文件用的工具类
+public class PropertiesUtil {
+    private static Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
+
+    private static Properties props;
+    //静态代码块
+    //因为启动的时候就要读取里面的配置
+    static {
+        String fileName = "mmall.properties";
+        props = new Properties();
+        try {
+            props.load(new InputStreamReader(
+                    PropertiesUtil.class.getClassLoader().getResourceAsStream(fileName),
+                    "UTF-8"));//实现
+        } catch (IOException e) {
+            logger.error("配置文件读取异常",e);
+        }
+    }
+
+    //通过mmall里面的key来获取value
+    public static String getProperty(String key){
+        String value = props.getProperty(key.trim());//trim是取消空格的方法
+        if(StringUtils.isBlank(value)){
+            return null;
+        }
+        return value.trim();
+    }
+
+    public static String getProperty(String key,String defaultValue){
+
+        String value = props.getProperty(key.trim());
+        if(StringUtils.isBlank(value)){
+            value = defaultValue;
+        }
+        return value.trim();
+    }
+
+}
